@@ -1,6 +1,24 @@
-import React from 'react'
+import React, { useState,useEffect } from "react";
 import axios from 'axios';
+import Modal from "./Modal";
+
 function MusicTable({ music, setMusic }) {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    function LikeAndDisLike(action, id) {
+        axios
+          .post("http://localhost:8000/api/songs/action/", {
+            song_id: id,
+            action: action,
+          })
+          .then((response) => {
+            const updatedMusic = music.map((item) => {
+              if (item.id === id) {
+                if (action === "like") {
+                  return { ...item, like: item.like + 1 };
+                } else if (action === "dislike") {
+                  return { ...item, like: item.like - 1 };
+                }
+              }
     function DeleteSong(id) {
         axios.delete(`http://localhost:8000/api/songs/${id}/`).then((response) => {
           setMusic(music.filter((item) => item.id !== id));
@@ -21,6 +39,7 @@ function MusicTable({ music, setMusic }) {
       <th scope="col">Like</th>
       <th scope="col">Action</th>
     </tr>
+
   </thead>
   <tbody>
   {music.map((item, index) => {
@@ -32,7 +51,18 @@ function MusicTable({ music, setMusic }) {
             <td>{item.release_date}</td>
             <td>{item.genre}</td>
             <td>{item.like}</td>
-            <td><button class="btn btn-danger">Delete</button><button class="btn btn-primary">Edit</button></td>
+            <td><button onClick={() => DeleteSong(item.id)} class="btn btn-danger">Delete</button>
+            <button onClick={() => setIsModalOpen(true)} class="btn btn-primary">Edit</button>
+            
+<Modal
+                      setIsModalOpen={setIsModalOpen}
+                      isModalOpen={isModalOpen}
+                      item={item}
+                      music={music}
+                      setMusic={setMusic}
+                    />
+            </td>
+
           </tr>
           })}
    
