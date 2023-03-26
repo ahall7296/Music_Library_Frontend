@@ -22,6 +22,8 @@ function App() {
   return (
     <div className="App">
       <NavigationBar />
+      <SearchBar  music={music} setMusic={setMusic} />
+      <MusicTable music={music} setMusic={setMusic} />
     </div>
   );
 }
